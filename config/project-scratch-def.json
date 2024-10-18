@@ -1,7 +1,9 @@
 {
-  "orgName": "philipgausaker company",
+  "orgName": "Your First company",
   "edition": "Developer",
-  "features": ["EnableSetPasswordInApi"],
+  "country": "NO",
+  "language": "en_US",
+  "features": ["EnableSetPasswordInApi","SalesUser"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true

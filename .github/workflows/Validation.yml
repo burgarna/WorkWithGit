@@ -1,0 +1,49 @@
+name: Validation
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          # Fetch all history commit
+          fetch-depth: 0
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '20.16.0'
+
+    # Install SF
+    - name: Install SF
+      uses: FluidoPhilip/WorkWithGit/.github/actions/installSF@main
+
+    - name: Install SF Git delta
+      run: |
+        echo y | sf plugins install sfdx-git-delta
+
+    - name: Generate diff
+      run: |
+        sf sgd source delta --to "HEAD" --from $(git merge-base HEAD origin/master) --output . -i .gitignore
+        echo -e "\033[0;32m--- package.xml generated with added and modified metadata ---\033[0m"
+        cat package/package.xml
+        echo -e "\n\033[0;31m--- !!!!!!!!! destructiveChanges.xml generated with metadata to DELETED!!!!!!!!!! ---\033[0m"
+        cat destructiveChanges/destructiveChanges.xml
+
+    # Authenticate dev hub
+    - name: Authenticate To org
+      uses: FluidoPhilip/WorkWithGit/.github/actions/authenticateOrg@main
+      with:
+        auth-url: ${{ secrets.CRM_SFDX_URL }}
+        alias: uat
+        setDefaultUsername: true
+        setDefaultDevhubUsername: true
+
+    - name: Validate 
+      run: |
+        sf project deploy validate -x package/package.xml --post-destructive-changes destructiveChanges/destructiveChanges.xml -l RunLocalTests -o uat -g

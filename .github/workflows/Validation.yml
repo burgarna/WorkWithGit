@@ -29,7 +29,7 @@ jobs:
 
     - name: Generate diff
       run: |
-        sf sgd source delta --to "HEAD" --from $(git merge-base HEAD origin/master) --output . -i .gitignore
+        sf sgd source delta --to "HEAD" --from $(git merge-base HEAD origin/main) --output . -i .gitignore
         echo -e "\033[0;32m--- package.xml generated with added and modified metadata ---\033[0m"
         cat package/package.xml
         echo -e "\n\033[0;31m--- !!!!!!!!! destructiveChanges.xml generated with metadata to DELETED!!!!!!!!!! ---\033[0m"

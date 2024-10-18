@@ -1,6 +1,8 @@
 {
   "orgName": "Your First company",
   "edition": "Developer",
+  "country": "NO",
+  "language": "en_US",
   "features": ["EnableSetPasswordInApi","SalesUser"],
   "settings": {
     "lightningExperienceSettings": {
